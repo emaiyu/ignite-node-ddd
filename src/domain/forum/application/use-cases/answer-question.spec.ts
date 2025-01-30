@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { expect, test } from 'vitest';
 
-import type { Answer } from '../entities/answer';
+import type { Answer } from '../../enterprise/entities/answer';
 import type { AnswerRepository } from '../repositories/answer-repository';
 
 import { AnswerQuestionUseCase } from './answer-question';
