@@ -1,57 +1,60 @@
-import { Entity } from "@/core/entities/entity";
-import { UniqueEntityId } from "@/core/entities/unique-entity-id";
-import { Optional } from "@/core/types/optional";
+import { Entity } from '@/core/entities/entity';
+import type { UniqueEntityId } from '@/core/entities/unique-entity-id';
+import type { Optional } from '@/core/types/optional';
 
 interface Props {
-  authorId: UniqueEntityId;
-  questionId: UniqueEntityId;
-  content: string;
-  createdAt: Date;
-  updatedAt?: Date;
+	authorId: UniqueEntityId;
+	questionId: UniqueEntityId;
+	content: string;
+	createdAt: Date;
+	updatedAt?: Date;
 }
 
 export class Answer extends Entity<Props> {
-  get authorId() {
-    return this.props.authorId;
-  }
+	get authorId(): UniqueEntityId {
+		return this.props.authorId;
+	}
 
-  get questionId() {
-    return this.props.questionId;
-  }
+	get questionId(): UniqueEntityId {
+		return this.props.questionId;
+	}
 
-  get content() {
-    return this.props.content;
-  }
+	get content(): string {
+		return this.props.content;
+	}
 
-  get createdAt() {
-    return this.props.createdAt;
-  }
+	get createdAt(): Date {
+		return this.props.createdAt;
+	}
 
-  get updatedAt() {
-    return this.props.updatedAt;
-  }
+	get updatedAt(): Date | undefined {
+		return this.props.updatedAt;
+	}
 
-  get excerpt() {
-    return this.content.substring(0, 120).trimEnd().concat("...");
-  }
+	get excerpt(): string {
+		return this.content.substring(0, 120).trimEnd().concat('...');
+	}
 
-  private touch() {
-    this.props.updatedAt = new Date();
-  }
+	private touch(): void {
+		this.props.updatedAt = new Date();
+	}
 
-  set content(content: string) {
-    this.props.content = content;
-    this.touch();
-  }
+	set content(content: string) {
+		this.props.content = content;
+		this.touch();
+	}
 
-  static create(props: Optional<Props, "createdAt">, id?: UniqueEntityId) {
-    const answer = new Answer(
-      {
-        ...props,
-        createdAt: new Date(),
-      },
-      id
-    );
-    return answer;
-  }
+	static create(
+		props: Optional<Props, 'createdAt'>,
+		id?: UniqueEntityId,
+	): Answer {
+		const answer = new Answer(
+			{
+				...props,
+				createdAt: new Date(),
+			},
+			id,
+		);
+		return answer;
+	}
 }
