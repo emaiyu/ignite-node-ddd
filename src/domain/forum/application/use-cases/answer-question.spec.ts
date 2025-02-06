@@ -1,24 +1,26 @@
 /* eslint-disable no-unused-vars */
-import { expect, test } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import type { Answer } from '../../enterprise/entities/answer';
-import type { AnswerRepository } from '../repositories/answer-repository';
+import { InMemoryAnswerRepository } from '@test/repositories/in-memory-answer-repository';
 
 import { AnswerQuestionUseCase } from './answer-question';
 
-const fakeAnswerRepository: AnswerRepository = {
-	create: async (answer: Answer): Promise<void> => {
-		return;
-	},
-};
+let answerRepository: InMemoryAnswerRepository;
+let sut: AnswerQuestionUseCase;
 
-test('create an answer', async () => {
-	const answerQuestion = new AnswerQuestionUseCase(fakeAnswerRepository);
-	const answer = await answerQuestion.execute({
-		instructorId: '1',
-		questionId: '1',
-		content: 'Nova resposta',
+describe('Answer question', function () {
+	beforeEach(function () {
+		answerRepository = new InMemoryAnswerRepository();
+		sut = new AnswerQuestionUseCase(answerRepository);
 	});
 
-	expect(answer.content).toEqual('Nova resposta');
+	it('should be able to answer a question', async () => {
+		const { answer } = await sut.execute({
+			instructorId: '1',
+			questionId: '1',
+			content: 'Nova resposta',
+		});
+
+		expect(answer.content).toEqual('Nova resposta');
+	});
 });

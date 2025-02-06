@@ -1,0 +1,23 @@
+/* eslint-disable no-unused-vars */
+
+import type { Question } from '@/domain/forum/enterprise/entities/question';
+
+import type { QuestionRepository } from '../../repositories/question-repository';
+
+interface FetchRecentQuestionPayload {
+	page: number;
+}
+
+interface FetchRecentQuestionResult {
+	questions: Question[];
+}
+
+export class FetchRecentQuestionUseCase {
+	constructor(private questionRepository: QuestionRepository) {}
+	async execute(
+		payload: FetchRecentQuestionPayload,
+	): Promise<FetchRecentQuestionResult> {
+		const questions = await this.questionRepository.findManyRecent(payload);
+		return { questions };
+	}
+}

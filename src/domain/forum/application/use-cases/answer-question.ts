@@ -10,9 +10,13 @@ interface AnswerQuestionPayload {
 	content: string;
 }
 
+interface AnswerQuestionResult {
+	answer: Answer;
+}
+
 export class AnswerQuestionUseCase {
 	constructor(private answerRepository: AnswerRepository) {}
-	async execute(payload: AnswerQuestionPayload): Promise<Answer> {
+	async execute(payload: AnswerQuestionPayload): Promise<AnswerQuestionResult> {
 		const answer = Answer.create({
 			content: payload.content,
 			authorId: new UniqueEntityId(payload.instructorId),
@@ -20,6 +24,6 @@ export class AnswerQuestionUseCase {
 		});
 
 		await this.answerRepository.create(answer);
-		return answer;
+		return { answer };
 	}
 }
