@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { InMemoryQuestionRepository } from '@test/repositories/in-memory-question-repository';
 
-import { CreateQuestionUseCase } from './create';
+import { CreateQuestionUseCase } from './create-question';
 
 let questionRepository: InMemoryQuestionRepository;
 let sut: CreateQuestionUseCase;

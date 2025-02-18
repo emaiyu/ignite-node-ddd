@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { makeQuestion } from '@test/factories/make-question';
 import { InMemoryQuestionRepository } from '@test/repositories/in-memory-question-repository';
 
-import { FetchRecentQuestionUseCase } from './fetch-recent';
+import { FetchRecentQuestionUseCase } from './fetch-recent-questions';
 
 let questionRepository: InMemoryQuestionRepository;
 let sut: FetchRecentQuestionUseCase;
@@ -44,7 +44,7 @@ describe('Fetch Recent Question', function () {
 		]);
 	});
 
-	it('should be able to fetch recent question', async () => {
+	it('should be able to fetch paginated recent question', async () => {
 		for (let i = 1; i <= 22; i++) {
 			await questionRepository.create(makeQuestion({}));
 		}

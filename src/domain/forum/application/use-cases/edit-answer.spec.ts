@@ -5,7 +5,7 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 import { makeAnswer } from '@test/factories/make-answer';
 import { InMemoryAnswerRepository } from '@test/repositories/in-memory-answer-repository';
 
-import { EditAnswerUseCase } from './edit';
+import { EditAnswerUseCase } from './edit-answer';
 
 let answerRepository: InMemoryAnswerRepository;
 let sut: EditAnswerUseCase;

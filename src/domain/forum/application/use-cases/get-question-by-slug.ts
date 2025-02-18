@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
-import type { Question } from '../../../enterprise/entities/question';
-import type { QuestionRepository } from '../../repositories/question-repository';
+import type { Question } from '../../enterprise/entities/question';
+import type { QuestionRepository } from '../repositories/question-repository';
 
 interface GetQuestionBySlugPayload {
 	slug: string;

@@ -2,7 +2,7 @@
 
 import type { Question } from '@/domain/forum/enterprise/entities/question';
 
-import type { QuestionRepository } from '../../repositories/question-repository';
+import type { QuestionRepository } from '../repositories/question-repository';
 
 interface EditQuestionPayload {
 	authorId: string;

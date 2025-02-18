@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import type { QuestionRepository } from '../../repositories/question-repository';
+import type { QuestionRepository } from '../repositories/question-repository';
 
 interface DeleteQuestionPayload {
 	authorId: string;

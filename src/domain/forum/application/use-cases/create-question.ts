@@ -2,8 +2,8 @@
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 
-import { Question } from '../../../enterprise/entities/question';
-import type { QuestionRepository } from '../../repositories/question-repository';
+import { Question } from '../../enterprise/entities/question';
+import type { QuestionRepository } from '../repositories/question-repository';
 
 interface CreateQuestionPayload {
 	authorId: string;

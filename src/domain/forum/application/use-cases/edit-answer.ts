@@ -2,7 +2,7 @@
 
 import type { Answer } from '@/domain/forum/enterprise/entities/answer';
 
-import type { AnswerRepository } from '../../repositories/answer-repository';
+import type { AnswerRepository } from '../repositories/answer-repository';
 
 interface EditAnswerPayload {
 	authorId: string;
