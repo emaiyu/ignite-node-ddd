@@ -1,17 +1,25 @@
 /* eslint-disable no-unused-vars */
 
+import { left, right, type Either } from '@/core/either';
+
 import type { Question } from '../../enterprise/entities/question';
 import type { AnswerRepository } from '../repositories/answer-repository';
 import type { QuestionRepository } from '../repositories/question-repository';
+
+import { NotAllowedError } from './errors/not-allowed';
+import { ResourceNotFoundError } from './errors/resource-not-found';
 
 interface ChooseQuestionBestAnswerQuestionPayload {
 	answerId: string;
 	authorId: string;
 }
 
-interface ChooseQuestionBestAnswerQuestionResult {
-	question: Question;
-}
+type ChooseQuestionBestAnswerQuestionResult = Either<
+	ResourceNotFoundError | NotAllowedError,
+	{
+		question: Question;
+	}
+>;
 
 export class ChooseQuestionBestAnswerQuestionUseCase {
 	constructor(
@@ -22,20 +30,20 @@ export class ChooseQuestionBestAnswerQuestionUseCase {
 		payload: ChooseQuestionBestAnswerQuestionPayload,
 	): Promise<ChooseQuestionBestAnswerQuestionResult> {
 		const answer = await this.answerRepository.findById(payload.answerId);
-		if (!answer) throw new Error('Answer not found');
+		if (!answer) return left(new ResourceNotFoundError());
 
 		const question = await this.questionRepository.findById(
 			answer.questionId.toString(),
 		);
-		if (!question) throw new Error('Question not found');
+		if (!question) return left(new ResourceNotFoundError());
 
 		if (question.authorId.toString() !== payload.authorId)
-			throw new Error('Not allowed');
+			return left(new NotAllowedError());
 
 		question.bestAnswerId = answer.id;
 
 		await this.questionRepository.save(question);
 
-		return { question };
+		return right({ question });
 	}
 }

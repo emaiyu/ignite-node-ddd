@@ -1,13 +1,22 @@
 /* eslint-disable no-unused-vars */
 
+import type { Either } from '@/core/either';
+import { left, right } from '@/core/either';
+
 import type { QuestionCommentRepository } from '../repositories/question-comment-repository';
+
+import { NotAllowedError } from './errors/not-allowed';
+import { ResourceNotFoundError } from './errors/resource-not-found';
 
 interface DeleteQuestionCommentPayload {
 	authorId: string;
 	questionCommentId: string;
 }
 
-interface DeleteQuestionCommentResult {}
+type DeleteQuestionCommentResult = Either<
+	ResourceNotFoundError | NotAllowedError,
+	{}
+>;
 
 export class DeleteQuestionCommentUseCase {
 	constructor(private questionCommentRepository: QuestionCommentRepository) {}
@@ -18,13 +27,13 @@ export class DeleteQuestionCommentUseCase {
 			payload.questionCommentId,
 		);
 
-		if (!questionComment) throw new Error('Question comment not found');
+		if (!questionComment) return left(new ResourceNotFoundError());
 
 		if (questionComment.authorId.toString() !== payload.authorId)
-			throw new Error('Not allowed');
+			return left(new NotAllowedError());
 
 		await this.questionCommentRepository.delete(questionComment);
 
-		return {};
+		return right({});
 	}
 }

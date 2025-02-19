@@ -1,10 +1,14 @@
 /* eslint-disable no-unused-vars */
 
+import type { Either } from '@/core/either';
+import { left, right } from '@/core/either';
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 
 import { QuestionComment } from '../../enterprise/entities/question-comment';
 import type { QuestionCommentRepository } from '../repositories/question-comment-repository';
 import type { QuestionRepository } from '../repositories/question-repository';
+
+import { ResourceNotFoundError } from './errors/resource-not-found';
 
 interface CommentOnQuestionPayload {
 	authorId: string;
@@ -12,9 +16,12 @@ interface CommentOnQuestionPayload {
 	content: string;
 }
 
-interface CommentOnQuestionResult {
-	questionComment: QuestionComment;
-}
+type CommentOnQuestionResult = Either<
+	ResourceNotFoundError,
+	{
+		questionComment: QuestionComment;
+	}
+>;
 
 export class CommentOnQuestionUseCase {
 	constructor(
@@ -26,7 +33,7 @@ export class CommentOnQuestionUseCase {
 	): Promise<CommentOnQuestionResult> {
 		const question = await this.questionRepository.findById(payload.questionId);
 
-		if (!question) throw new Error('Question not found');
+		if (!question) return left(new ResourceNotFoundError());
 
 		const questionComment = QuestionComment.create({
 			authorId: new UniqueEntityId(payload.authorId),
@@ -36,8 +43,8 @@ export class CommentOnQuestionUseCase {
 
 		await this.questionCommentRepository.create(questionComment);
 
-		return {
+		return right({
 			questionComment,
-		};
+		});
 	}
 }

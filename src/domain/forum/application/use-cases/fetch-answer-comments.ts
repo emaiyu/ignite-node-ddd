@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 
+import { right, type Either } from '@/core/either';
+
 import type { AnswerComment } from '../../enterprise/entities/answer-comment';
 import type { AnswerCommentRepository } from '../repositories/answer-comment-repository';
 
@@ -8,9 +10,12 @@ interface FetchAnswerCommentsPayload {
 	page: number;
 }
 
-interface FetchAnswerCommentsResult {
-	answerComments: AnswerComment[];
-}
+type FetchAnswerCommentsResult = Either<
+	null,
+	{
+		answerComments: AnswerComment[];
+	}
+>;
 
 export class FetchAnswerCommentsUseCase {
 	constructor(private answerCommentRepository: AnswerCommentRepository) {}
@@ -20,6 +25,6 @@ export class FetchAnswerCommentsUseCase {
 	}: FetchAnswerCommentsPayload): Promise<FetchAnswerCommentsResult> {
 		const answerComments =
 			await this.answerCommentRepository.findManyByAnswerId(answerId, params);
-		return { answerComments };
+		return right({ answerComments });
 	}
 }

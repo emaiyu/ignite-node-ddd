@@ -1,10 +1,14 @@
 /* eslint-disable no-unused-vars */
 
+import type { Either } from '@/core/either';
+import { left, right } from '@/core/either';
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 
 import { AnswerComment } from '../../enterprise/entities/answer-comment';
 import type { AnswerCommentRepository } from '../repositories/answer-comment-repository';
 import type { AnswerRepository } from '../repositories/answer-repository';
+
+import { NotAllowedError } from './errors/not-allowed';
 
 interface CommentOnAnswerPayload {
 	authorId: string;
@@ -12,9 +16,10 @@ interface CommentOnAnswerPayload {
 	content: string;
 }
 
-interface CommentOnAnswerResult {
-	answerComment: AnswerComment;
-}
+type CommentOnAnswerResult = Either<
+	NotAllowedError,
+	{ answerComment: AnswerComment }
+>;
 
 export class CommentOnAnswerUseCase {
 	constructor(
@@ -26,7 +31,7 @@ export class CommentOnAnswerUseCase {
 	): Promise<CommentOnAnswerResult> {
 		const answer = await this.answerRepository.findById(payload.answerId);
 
-		if (!answer) throw new Error('Answer not found');
+		if (!answer) return left(new NotAllowedError());
 
 		const answerComment = AnswerComment.create({
 			authorId: new UniqueEntityId(payload.authorId),
@@ -36,8 +41,8 @@ export class CommentOnAnswerUseCase {
 
 		await this.answerCommentRepository.create(answerComment);
 
-		return {
+		return right({
 			answerComment,
-		};
+		});
 	}
 }

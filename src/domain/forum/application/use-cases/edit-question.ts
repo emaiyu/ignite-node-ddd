@@ -1,8 +1,13 @@
 /* eslint-disable no-unused-vars */
 
+import type { Either } from '@/core/either';
+import { left, right } from '@/core/either';
 import type { Question } from '@/domain/forum/enterprise/entities/question';
 
 import type { QuestionRepository } from '../repositories/question-repository';
+
+import { NotAllowedError } from './errors/not-allowed';
+import { ResourceNotFoundError } from './errors/resource-not-found';
 
 interface EditQuestionPayload {
 	authorId: string;
@@ -11,24 +16,25 @@ interface EditQuestionPayload {
 	content: string;
 }
 
-interface EditQuestionResult {
-	question: Question;
-}
+type EditQuestionResult = Either<
+	ResourceNotFoundError | NotAllowedError,
+	{
+		question: Question;
+	}
+>;
 
 export class EditQuestionUseCase {
 	constructor(private questionRepository: QuestionRepository) {}
 	async execute(payload: EditQuestionPayload): Promise<EditQuestionResult> {
 		const question = await this.questionRepository.findById(payload.questionId);
-		if (!question) throw new Error('Question not found');
+		if (!question) return left(new ResourceNotFoundError());
 		if (question.authorId.toString() !== payload.authorId)
-			throw new Error('Not allowed');
+			return left(new NotAllowedError());
 
 		question.title = payload.title;
 		question.content = payload.content;
 
 		await this.questionRepository.save(question);
-		return {
-			question,
-		};
+		return right({ question });
 	}
 }

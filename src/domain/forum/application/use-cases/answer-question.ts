@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { right, type Either } from '@/core/either';
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 
 import { Answer } from '../../enterprise/entities/answer';
@@ -10,9 +11,12 @@ interface AnswerQuestionPayload {
 	content: string;
 }
 
-interface AnswerQuestionResult {
-	answer: Answer;
-}
+type AnswerQuestionResult = Either<
+	null,
+	{
+		answer: Answer;
+	}
+>;
 
 export class AnswerQuestionUseCase {
 	constructor(private answerRepository: AnswerRepository) {}
@@ -24,6 +28,6 @@ export class AnswerQuestionUseCase {
 		});
 
 		await this.answerRepository.create(answer);
-		return { answer };
+		return right({ answer });
 	}
 }

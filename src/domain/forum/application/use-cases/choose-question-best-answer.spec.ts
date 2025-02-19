@@ -8,6 +8,7 @@ import { InMemoryAnswerRepository } from '@test/repositories/in-memory-answer-re
 import { InMemoryQuestionRepository } from '@test/repositories/in-memory-question-repository';
 
 import { ChooseQuestionBestAnswerQuestionUseCase } from './choose-question-best-answer';
+import { NotAllowedError } from './errors/not-allowed';
 
 let answerRepository: InMemoryAnswerRepository;
 let questionRepository: InMemoryQuestionRepository;
@@ -47,11 +48,19 @@ describe('Choose Question Best Answer', function () {
 		await questionRepository.create(question);
 		await answerRepository.create(answer);
 
-		await expect(function () {
-			return sut.execute({
-				answerId: answer.id?.toString(),
-				authorId: 'author-2',
-			});
-		}).rejects.toBeInstanceOf(Error);
+		// await expect(function () {
+		// 	return sut.execute({
+		// 		answerId: answer.id?.toString(),
+		// 		authorId: 'author-2',
+		// 	});
+		// }).rejects.toBeInstanceOf(Error);
+
+		const result = await sut.execute({
+			answerId: answer.id?.toString(),
+			authorId: 'author-2',
+		});
+
+		expect(result.isLeft()).toBe(true);
+		expect(result.value).toBeInstanceOf(NotAllowedError);
 	});
 });

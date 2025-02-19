@@ -32,12 +32,14 @@ describe('Fetch Recent Question', function () {
 			}),
 		);
 
-		const { questions } = await sut.execute({
+		const result = await sut.execute({
 			page: 1,
 		});
 
-		expect(questions).toHaveLength(3);
-		expect(questions).toEqual([
+		expect(result.isRight()).toBe(true);
+
+		expect(result.value?.questions).toHaveLength(3);
+		expect(result.value?.questions).toEqual([
 			expect.objectContaining({ createdAt: new Date(2022, 0, 23) }),
 			expect.objectContaining({ createdAt: new Date(2022, 0, 20) }),
 			expect.objectContaining({ createdAt: new Date(2022, 0, 18) }),
@@ -49,10 +51,11 @@ describe('Fetch Recent Question', function () {
 			await questionRepository.create(makeQuestion({}));
 		}
 
-		const { questions } = await sut.execute({
+		const result = await sut.execute({
 			page: 2,
 		});
 
-		expect(questions).toHaveLength(2);
+		expect(result.isRight()).toBe(true);
+		expect(result.value?.questions).toHaveLength(2);
 	});
 });

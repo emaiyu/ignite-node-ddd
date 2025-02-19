@@ -6,6 +6,7 @@ import { makeQuestion } from '@test/factories/make-question';
 import { InMemoryQuestionRepository } from '@test/repositories/in-memory-question-repository';
 
 import { EditQuestionUseCase } from './edit-question';
+import { NotAllowedError } from './errors/not-allowed';
 
 let questionRepository: InMemoryQuestionRepository;
 let sut: EditQuestionUseCase;
@@ -49,13 +50,23 @@ describe('Edit Question', function () {
 
 		await questionRepository.create(newQuestion);
 
-		await expect(function () {
-			return sut.execute({
-				questionId: newQuestion.id?.toValue(),
-				authorId: 'author-2',
-				title: 'Pergunta 1',
-				content: 'Conteúdo da pergunta 1',
-			});
-		}).rejects.toBeInstanceOf(Error);
+		// await expect(function () {
+		// 	return sut.execute({
+		// 		questionId: newQuestion.id?.toValue(),
+		// 		authorId: 'author-2',
+		// 		title: 'Pergunta 1',
+		// 		content: 'Conteúdo da pergunta 1',
+		// 	});
+		// }).rejects.toBeInstanceOf(Error);
+
+		const result = await sut.execute({
+			questionId: newQuestion.id?.toValue(),
+			authorId: 'author-2',
+			title: 'Pergunta 1',
+			content: 'Conteúdo da pergunta 1',
+		});
+
+		expect(result.isLeft()).toBe(true);
+		expect(result.value).toBeInstanceOf(NotAllowedError);
 	});
 });

@@ -1,22 +1,28 @@
 /* eslint-disable no-unused-vars */
 
+import type { Either } from '@/core/either';
+import { left, right } from '@/core/either';
+
 import type { QuestionRepository } from '../repositories/question-repository';
+
+import { NotAllowedError } from './errors/not-allowed';
+import { ResourceNotFoundError } from './errors/resource-not-found';
 
 interface DeleteQuestionPayload {
 	authorId: string;
 	questionId: string;
 }
 
-interface DeleteQuestionResult {}
+type DeleteQuestionResult = Either<ResourceNotFoundError | NotAllowedError, {}>;
 
 export class DeleteQuestionUseCase {
 	constructor(private questionRepository: QuestionRepository) {}
 	async execute(payload: DeleteQuestionPayload): Promise<DeleteQuestionResult> {
 		const question = await this.questionRepository.findById(payload.questionId);
-		if (!question) throw new Error('Question not found');
+		if (!question) return left(new ResourceNotFoundError());
 		if (question.authorId.toString() !== payload.authorId)
-			throw new Error('Not allowed');
+			return left(new NotAllowedError());
 		await this.questionRepository.delete(question);
-		return {};
+		return right({});
 	}
 }

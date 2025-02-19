@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 
+import { right, type Either } from '@/core/either';
+
 import type { QuestionComment } from '../../enterprise/entities/question-comment';
 import type { QuestionCommentRepository } from '../repositories/question-comment-repository';
 
@@ -8,9 +10,12 @@ interface FetchQuestionCommentsPayload {
 	page: number;
 }
 
-interface FetchQuestionCommentsResult {
-	questionComments: QuestionComment[];
-}
+type FetchQuestionCommentsResult = Either<
+	null,
+	{
+		questionComments: QuestionComment[];
+	}
+>;
 
 export class FetchQuestionCommentsUseCase {
 	constructor(private questionCommentRepository: QuestionCommentRepository) {}
@@ -23,6 +28,6 @@ export class FetchQuestionCommentsUseCase {
 				questionId,
 				params,
 			);
-		return { questionComments };
+		return right({ questionComments });
 	}
 }

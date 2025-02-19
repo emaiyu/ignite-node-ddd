@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 
+import { right, type Either } from '@/core/either';
 import type { Answer } from '@/domain/forum/enterprise/entities/answer';
 
 import type { AnswerRepository } from '../repositories/answer-repository';
@@ -9,9 +10,12 @@ interface FetchQuestionAnswersPayload {
 	page: number;
 }
 
-interface FetchQuestionAnswersResult {
-	answers: Answer[];
-}
+type FetchQuestionAnswersResult = Either<
+	null,
+	{
+		answers: Answer[];
+	}
+>;
 
 export class FetchQuestionAnswersUseCase {
 	constructor(private answerRepository: AnswerRepository) {}
@@ -23,6 +27,6 @@ export class FetchQuestionAnswersUseCase {
 			questionId,
 			payload,
 		);
-		return { answers };
+		return right({ answers });
 	}
 }

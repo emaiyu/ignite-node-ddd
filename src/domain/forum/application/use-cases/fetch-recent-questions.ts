@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 
+import { right, type Either } from '@/core/either';
 import type { Question } from '@/domain/forum/enterprise/entities/question';
 
 import type { QuestionRepository } from '../repositories/question-repository';
@@ -8,9 +9,12 @@ interface FetchRecentQuestionPayload {
 	page: number;
 }
 
-interface FetchRecentQuestionResult {
-	questions: Question[];
-}
+type FetchRecentQuestionResult = Either<
+	null,
+	{
+		questions: Question[];
+	}
+>;
 
 export class FetchRecentQuestionUseCase {
 	constructor(private questionRepository: QuestionRepository) {}
@@ -18,6 +22,6 @@ export class FetchRecentQuestionUseCase {
 		payload: FetchRecentQuestionPayload,
 	): Promise<FetchRecentQuestionResult> {
 		const questions = await this.questionRepository.findManyRecent(payload);
-		return { questions };
+		return right({ questions });
 	}
 }
