@@ -3,15 +3,14 @@
 import type { Either } from '@/core/either';
 import { left, right } from '@/core/either';
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
+import { NotAllowedError } from '@/core/errors/not-allowed';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found';
 import type { Answer } from '@/domain/forum/enterprise/entities/answer';
 
 import { AnswerAttachment } from '../../enterprise/entities/answer-attachment';
 import { AnswerAttachmentList } from '../../enterprise/entities/answer-attachment-list';
 import type { AnswerAttachmentRepository } from '../repositories/answer-attachment-repository';
 import type { AnswerRepository } from '../repositories/answer-repository';
-
-import { NotAllowedError } from './errors/not-allowed';
-import { ResourceNotFoundError } from './errors/resource-not-found';
 
 interface EditAnswerPayload {
 	authorId: string;

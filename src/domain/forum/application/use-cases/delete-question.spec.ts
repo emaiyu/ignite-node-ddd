@@ -2,13 +2,13 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
+import { NotAllowedError } from '@/core/errors/not-allowed';
 import { makeQuestion } from '@test/factories/make-question';
 import { makeQuestionAttachment } from '@test/factories/make-question-attatchment';
 import { InMemoryQuestionAttachmentRepository } from '@test/repositories/in-memory-question-attachment-repository';
 import { InMemoryQuestionRepository } from '@test/repositories/in-memory-question-repository';
 
 import { DeleteQuestionUseCase } from './delete-question';
-import { NotAllowedError } from './errors/not-allowed';
 
 let questionRepository: InMemoryQuestionRepository;
 let questionAttachmentRepository: InMemoryQuestionAttachmentRepository;

@@ -3,12 +3,11 @@
 import type { Either } from '@/core/either';
 import { left, right } from '@/core/either';
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found';
 
 import { QuestionComment } from '../../enterprise/entities/question-comment';
 import type { QuestionCommentRepository } from '../repositories/question-comment-repository';
 import type { QuestionRepository } from '../repositories/question-repository';
-
-import { ResourceNotFoundError } from './errors/resource-not-found';
 
 interface CommentOnQuestionPayload {
 	authorId: string;

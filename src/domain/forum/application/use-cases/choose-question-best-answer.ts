@@ -1,13 +1,12 @@
 /* eslint-disable no-unused-vars */
 
 import { left, right, type Either } from '@/core/either';
+import { NotAllowedError } from '@/core/errors/not-allowed';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found';
 
 import type { Question } from '../../enterprise/entities/question';
 import type { AnswerRepository } from '../repositories/answer-repository';
 import type { QuestionRepository } from '../repositories/question-repository';
-
-import { NotAllowedError } from './errors/not-allowed';
-import { ResourceNotFoundError } from './errors/resource-not-found';
 
 interface ChooseQuestionBestAnswerQuestionPayload {
 	answerId: string;

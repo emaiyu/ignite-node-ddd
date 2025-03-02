@@ -1,11 +1,10 @@
 /* eslint-disable no-unused-vars */
 import type { Either } from '@/core/either';
 import { left, right } from '@/core/either';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found';
 import type { Question } from '@/domain/forum/enterprise/entities/question';
 
 import type { QuestionRepository } from '../repositories/question-repository';
-
-import { ResourceNotFoundError } from './errors/resource-not-found';
 
 interface GetQuestionBySlugPayload {
 	slug: string;

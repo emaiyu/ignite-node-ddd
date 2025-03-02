@@ -2,11 +2,11 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
+import { NotAllowedError } from '@/core/errors/not-allowed';
 import { makeAnswerComment } from '@test/factories/make-answer-comment';
 import { InMemoryAnswerCommentRepository } from '@test/repositories/in-memory-answer-comment-repository';
 
 import { DeleteAnswerCommentUseCase } from './delete-answer-comment';
-import { NotAllowedError } from './errors/not-allowed';
 
 let answerCommentRepository: InMemoryAnswerCommentRepository;
 let sut: DeleteAnswerCommentUseCase;

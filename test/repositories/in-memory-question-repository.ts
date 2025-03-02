@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { DomainEvents } from '@/core/events/domain-events';
 import type { PaginationParams } from '@/core/repositories/paginate-params';
 import type { QuestionAttachmentRepository } from '@/domain/forum/application/repositories/question-attachment-repository';
 import type { QuestionRepository } from '@/domain/forum/application/repositories/question-repository';
@@ -35,6 +36,7 @@ export class InMemoryQuestionRepository implements QuestionRepository {
 
 	async create(question: Question): Promise<void> {
 		this.items.push(question);
+		DomainEvents.dispatchEventsForAggregate(question.id);
 	}
 
 	async save(question: Question): Promise<void> {
@@ -43,6 +45,7 @@ export class InMemoryQuestionRepository implements QuestionRepository {
 		);
 
 		this.items[itemIndex] = question;
+		DomainEvents.dispatchEventsForAggregate(question.id);
 	}
 
 	async delete(question: Question): Promise<void> {

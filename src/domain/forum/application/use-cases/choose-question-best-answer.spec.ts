@@ -2,6 +2,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
+import { NotAllowedError } from '@/core/errors/not-allowed';
 import { makeAnswer } from '@test/factories/make-answer';
 import { makeQuestion } from '@test/factories/make-question';
 import { InMemoryAnswerAttachmentRepository } from '@test/repositories/in-memory-answer-attachment-repository';
@@ -10,7 +11,6 @@ import { InMemoryQuestionAttachmentRepository } from '@test/repositories/in-memo
 import { InMemoryQuestionRepository } from '@test/repositories/in-memory-question-repository';
 
 import { ChooseQuestionBestAnswerQuestionUseCase } from './choose-question-best-answer';
-import { NotAllowedError } from './errors/not-allowed';
 
 let answerRepository: InMemoryAnswerRepository;
 let answerAttachmentRepository: InMemoryAnswerAttachmentRepository;

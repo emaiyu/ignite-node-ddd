@@ -3,12 +3,11 @@
 import type { Either } from '@/core/either';
 import { left, right } from '@/core/either';
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
+import { NotAllowedError } from '@/core/errors/not-allowed';
 
 import { AnswerComment } from '../../enterprise/entities/answer-comment';
 import type { AnswerCommentRepository } from '../repositories/answer-comment-repository';
 import type { AnswerRepository } from '../repositories/answer-repository';
-
-import { NotAllowedError } from './errors/not-allowed';
 
 interface CommentOnAnswerPayload {
 	authorId: string;
