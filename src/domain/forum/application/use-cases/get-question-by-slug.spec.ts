@@ -2,16 +2,21 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { Slug } from '@/domain/forum/enterprise/entities/value-objects/slug';
 import { makeQuestion } from '@test/factories/make-question';
+import { InMemoryQuestionAttachmentRepository } from '@test/repositories/in-memory-question-attachment-repository';
 import { InMemoryQuestionRepository } from '@test/repositories/in-memory-question-repository';
 
 import { GetQuestionBySlugUseCase } from './get-question-by-slug';
 
 let questionRepository: InMemoryQuestionRepository;
+let questionAttachmentRepository: InMemoryQuestionAttachmentRepository;
 let sut: GetQuestionBySlugUseCase;
 
 describe('Get Question By Slug', () => {
 	beforeEach(() => {
-		questionRepository = new InMemoryQuestionRepository();
+		questionAttachmentRepository = new InMemoryQuestionAttachmentRepository();
+		questionRepository = new InMemoryQuestionRepository(
+			questionAttachmentRepository,
+		);
 		sut = new GetQuestionBySlugUseCase(questionRepository);
 	});
 
@@ -27,7 +32,10 @@ describe('Get Question By Slug', () => {
 		});
 
 		expect(result.isRight()).toBe(true);
-		expect(result.value?.question.id).toBeTruthy();
-		expect(result.value?.question.title).toEqual(newQuestion.title);
+		expect(result.value).toMatchObject({
+			question: expect.objectContaining({
+				title: newQuestion.title,
+			}),
+		});
 	});
 });

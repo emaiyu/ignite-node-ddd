@@ -3,17 +3,21 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 import { makeAnswer } from '@test/factories/make-answer';
+import { makeAnswerAttachment } from '@test/factories/make-answer-attatchment';
+import { InMemoryAnswerAttachmentRepository } from '@test/repositories/in-memory-answer-attachment-repository';
 import { InMemoryAnswerRepository } from '@test/repositories/in-memory-answer-repository';
 
 import { DeleteAnswerUseCase } from './delete-answer';
 import { NotAllowedError } from './errors/not-allowed';
 
 let answerRepository: InMemoryAnswerRepository;
+let answerAttachmentRepository: InMemoryAnswerAttachmentRepository;
 let sut: DeleteAnswerUseCase;
 
 describe('Delete Answer', function () {
 	beforeEach(function () {
-		answerRepository = new InMemoryAnswerRepository();
+		answerAttachmentRepository = new InMemoryAnswerAttachmentRepository();
+		answerRepository = new InMemoryAnswerRepository(answerAttachmentRepository);
 		sut = new DeleteAnswerUseCase(answerRepository);
 	});
 
@@ -26,6 +30,17 @@ describe('Delete Answer', function () {
 		);
 
 		await answerRepository.create(newAnswer);
+
+		answerAttachmentRepository.items.push(
+			makeAnswerAttachment({
+				answerId: newAnswer.id,
+				attachmentId: new UniqueEntityId('1'),
+			}),
+			makeAnswerAttachment({
+				answerId: newAnswer.id,
+				attachmentId: new UniqueEntityId('2'),
+			}),
+		);
 
 		await sut.execute({
 			answerId: 'answer-1',

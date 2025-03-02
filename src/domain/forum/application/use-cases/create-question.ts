@@ -5,13 +5,14 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 
 import { Question } from '../../enterprise/entities/question';
 import { QuestionAttachment } from '../../enterprise/entities/question-attachment';
+import { QuestionAttachmentList } from '../../enterprise/entities/question-attachment-list';
 import type { QuestionRepository } from '../repositories/question-repository';
 
 interface CreateQuestionPayload {
 	authorId: string;
 	title: string;
 	content: string;
-	attachmentId: string[];
+	attachmentsId: string[];
 }
 
 type CreateQuestionResult = Either<
@@ -30,14 +31,14 @@ export class CreateQuestionUseCase {
 			content: payload.content,
 		});
 
-		const attachments = payload.attachmentId.map((attachmentId) => {
+		const attachments = payload.attachmentsId.map((attachmentId) => {
 			return QuestionAttachment.create({
 				questionId: question.id,
 				attachmentId: new UniqueEntityId(attachmentId),
 			});
 		});
 
-		question.attachments = attachments;
+		question.attachments = new QuestionAttachmentList(attachments);
 
 		await this.questionRepository.create(question);
 

@@ -3,16 +3,20 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 import { makeAnswer } from '@test/factories/make-answer';
+import { InMemoryAnswerAttachmentRepository } from '@test/repositories/in-memory-answer-attachment-repository';
 import { InMemoryAnswerRepository } from '@test/repositories/in-memory-answer-repository';
 
 import { FetchQuestionAnswersUseCase } from './fetch-question-answers';
 
 let answerRepository: InMemoryAnswerRepository;
+let answerAttachmentRepository: InMemoryAnswerAttachmentRepository;
+
 let sut: FetchQuestionAnswersUseCase;
 
 describe('Fetch Question Answers', function () {
 	beforeEach(function () {
-		answerRepository = new InMemoryAnswerRepository();
+		answerAttachmentRepository = new InMemoryAnswerAttachmentRepository();
+		answerRepository = new InMemoryAnswerRepository(answerAttachmentRepository);
 		sut = new FetchQuestionAnswersUseCase(answerRepository);
 	});
 

@@ -4,7 +4,7 @@ import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
 
-import type { QuestionAttachment } from './question-attachment';
+import { QuestionAttachmentList } from './question-attachment-list';
 import { Slug } from './value-objects/slug';
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 	title: string;
 	content: string;
 	slug: Slug;
-	attachments: QuestionAttachment[];
+	attachments: QuestionAttachmentList;
 	createdAt: Date;
 	updatedAt?: Date;
 }
@@ -39,7 +39,7 @@ export class Question extends AggregateRoot<Props> {
 		return this.props.slug;
 	}
 
-	get attachments(): QuestionAttachment[] {
+	get attachments(): QuestionAttachmentList {
 		return this.props.attachments;
 	}
 
@@ -74,8 +74,9 @@ export class Question extends AggregateRoot<Props> {
 		this.touch();
 	}
 
-	set attachments(attachments: QuestionAttachment[]) {
+	set attachments(attachments: QuestionAttachmentList) {
 		this.props.attachments = attachments;
+		this.touch();
 	}
 
 	set bestAnswerId(bestAnswerId: UniqueEntityId | undefined) {
@@ -91,7 +92,7 @@ export class Question extends AggregateRoot<Props> {
 			{
 				...props,
 				slug: props.slug ?? Slug.createFromText(props.title),
-				attachments: props.attachments ?? [],
+				attachments: props.attachments ?? new QuestionAttachmentList(),
 				createdAt: props.createdAt ?? new Date(),
 			},
 			id,

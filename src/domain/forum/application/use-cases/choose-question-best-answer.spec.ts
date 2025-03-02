@@ -4,20 +4,28 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 import { makeAnswer } from '@test/factories/make-answer';
 import { makeQuestion } from '@test/factories/make-question';
+import { InMemoryAnswerAttachmentRepository } from '@test/repositories/in-memory-answer-attachment-repository';
 import { InMemoryAnswerRepository } from '@test/repositories/in-memory-answer-repository';
+import { InMemoryQuestionAttachmentRepository } from '@test/repositories/in-memory-question-attachment-repository';
 import { InMemoryQuestionRepository } from '@test/repositories/in-memory-question-repository';
 
 import { ChooseQuestionBestAnswerQuestionUseCase } from './choose-question-best-answer';
 import { NotAllowedError } from './errors/not-allowed';
 
 let answerRepository: InMemoryAnswerRepository;
+let answerAttachmentRepository: InMemoryAnswerAttachmentRepository;
 let questionRepository: InMemoryQuestionRepository;
+let questionAttachmentRepository: InMemoryQuestionAttachmentRepository;
 let sut: ChooseQuestionBestAnswerQuestionUseCase;
 
 describe('Choose Question Best Answer', function () {
 	beforeEach(function () {
-		answerRepository = new InMemoryAnswerRepository();
-		questionRepository = new InMemoryQuestionRepository();
+		answerAttachmentRepository = new InMemoryAnswerAttachmentRepository();
+		questionAttachmentRepository = new InMemoryQuestionAttachmentRepository();
+		answerRepository = new InMemoryAnswerRepository(answerAttachmentRepository);
+		questionRepository = new InMemoryQuestionRepository(
+			questionAttachmentRepository,
+		);
 		sut = new ChooseQuestionBestAnswerQuestionUseCase(
 			questionRepository,
 			answerRepository,

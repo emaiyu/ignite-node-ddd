@@ -2,8 +2,12 @@
 
 import type { Either } from '@/core/either';
 import { left, right } from '@/core/either';
+import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 import type { Question } from '@/domain/forum/enterprise/entities/question';
 
+import { QuestionAttachment } from '../../enterprise/entities/question-attachment';
+import { QuestionAttachmentList } from '../../enterprise/entities/question-attachment-list';
+import type { QuestionAttachmentRepository } from '../repositories/question-attachment-repository';
 import type { QuestionRepository } from '../repositories/question-repository';
 
 import { NotAllowedError } from './errors/not-allowed';
@@ -14,6 +18,7 @@ interface EditQuestionPayload {
 	questionId: string;
 	title: string;
 	content: string;
+	attachmentsId: string[];
 }
 
 type EditQuestionResult = Either<
@@ -24,13 +29,35 @@ type EditQuestionResult = Either<
 >;
 
 export class EditQuestionUseCase {
-	constructor(private questionRepository: QuestionRepository) {}
+	constructor(
+		private questionRepository: QuestionRepository,
+		private questionAttachmentRepository: QuestionAttachmentRepository,
+	) {}
 	async execute(payload: EditQuestionPayload): Promise<EditQuestionResult> {
 		const question = await this.questionRepository.findById(payload.questionId);
 		if (!question) return left(new ResourceNotFoundError());
 		if (question.authorId.toString() !== payload.authorId)
 			return left(new NotAllowedError());
 
+		const currentQuestionAttachments =
+			await this.questionAttachmentRepository.findManyByQuestionId(
+				payload.questionId,
+			);
+
+		const questionAttachmentList = new QuestionAttachmentList(
+			currentQuestionAttachments,
+		);
+
+		const attachments = payload.attachmentsId.map((attachmentId) => {
+			return QuestionAttachment.create({
+				questionId: question.id,
+				attachmentId: new UniqueEntityId(attachmentId),
+			});
+		});
+
+		questionAttachmentList.update(attachments);
+
+		question.attachments = questionAttachmentList;
 		question.title = payload.title;
 		question.content = payload.content;
 

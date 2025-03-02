@@ -1,9 +1,15 @@
+/* eslint-disable no-unused-vars */
 import type { PaginationParams } from '@/core/repositories/paginate-params';
+import type { QuestionAttachmentRepository } from '@/domain/forum/application/repositories/question-attachment-repository';
 import type { QuestionRepository } from '@/domain/forum/application/repositories/question-repository';
 import type { Question } from '@/domain/forum/enterprise/entities/question';
 
 export class InMemoryQuestionRepository implements QuestionRepository {
 	public items: Question[] = [];
+
+	constructor(
+		private questionAttachmentRepository: QuestionAttachmentRepository,
+	) {}
 
 	async findById(id: string): Promise<Question | null> {
 		const question = this.items.find(
@@ -45,5 +51,8 @@ export class InMemoryQuestionRepository implements QuestionRepository {
 		);
 
 		this.items.splice(itemIndex, 1);
+		this.questionAttachmentRepository.deleteManyByQuestionId(
+			question.id.toString(),
+		);
 	}
 }
